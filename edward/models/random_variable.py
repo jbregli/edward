@@ -115,6 +115,7 @@ class RandomVariable(object):
             "value argument or implement sample for {0}."
             .format(self.__class__.__name__))
 
+    self._unique_name = self._value.name.split('/')[0]
     tf.add_to_collection(RANDOM_VARIABLE_COLLECTION, self)
 
   @property
@@ -127,9 +128,15 @@ class RandomVariable(object):
     """Shape of random variable."""
     return self._value.shape
 
+  @property
+  def unique_name(self):
+    """Name of random variable with its unique scoping name. Use
+    ``name`` to just get the name of the random variable."""
+    return self._unique_name
+
   def __str__(self):
     return "RandomVariable(\"%s\"%s%s%s)" % (
-        self.name,
+        self.unique_name,
         (", shape=%s" % self.shape)
         if self.shape.ndims is not None else "",
         (", dtype=%s" % self.dtype.name) if self.dtype else "",
@@ -137,7 +144,7 @@ class RandomVariable(object):
 
   def __repr__(self):
     return "<ed.RandomVariable '%s' shape=%s dtype=%s>" % (
-        self.name, self.shape, self.dtype.name)
+        self.unique_name, self.shape, self.dtype.name)
 
   def __add__(self, other):
     return tf.add(self, other)

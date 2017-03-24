@@ -180,7 +180,7 @@ def copy(org_instance, dict_swap=None, scope="copied",
 
   # If an instance of the same name exists, return appropriately.
   # Do this for ed.RandomVariable.
-  random_variables = {x.name: x for x in
+  random_variables = {x.unique_name: x for x in
                       graph.get_collection('_random_variable_collection_')}
   if new_name in random_variables:
     return random_variables[new_name]

@@ -38,7 +38,7 @@ def dirichlet_process(alpha):
   return stick_num
 
 
-dp = dirichlet_process(alpha=10.0)
+dp = dirichlet_process(10.0)
 
 # The number of sticks broken is dynamic, changing across evaluations.
 sess = tf.Session()
@@ -46,7 +46,7 @@ print(sess.run(dp))
 print(sess.run(dp))
 
 # Demo of the DirichletProcess random variable in Edward.
-base = Normal(mu=0.0, sigma=1.0)
+base = Normal(0.0, 1.0)
 
 # Highly concentrated DP.
 alpha = 1.0

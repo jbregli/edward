@@ -35,7 +35,6 @@ ed.set_seed(42)
 M = 100  # batch size during training
 d = 2  # latent dimension
 alpha = 0.5
-beta = 0.5
 
 # DATA. MNIST batches are fed at training time.
 mnist = input_data.read_data_sets(DATA_DIR)

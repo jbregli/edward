@@ -77,33 +77,9 @@ class AB_divergence(VariationalInference):
 
         if is_reparameterizable:
             return build_reparam_loss_and_gradients(self, var_list,
-                                                    alpha=self.alpha, beta=self.beta,
-                                                    batch_size=self.batch_size)
+                                                    alpha=self.alpha, beta=self.beta)
         else:
             raise NotImplementedError("Variational Renyi inference only works with reparameterizable models")
-
-        if is_reparameterizable:
-            if is_analytic_kl:
-                # See function ### 1 ###
-                return build_reparam_loss_and_gradients(self, var_list,
-                                                        alpha=self.alpha, beta=self.beta,
-                                                        batch_size=self.batch_size)
-                # return build_reparam_ab_loss_and_gradients(self, var_list,
-                #                                            alpha=self.alpha, beta=self.beta)
-            else:
-                # See function ### 2 ###
-                return build_reparam_loss_and_gradients(self, var_list,
-                                                        alpha=self.alpha, beta=self.beta,
-                                                        batch_size=self.batch_size)
-        else:
-            if is_analytic_kl:
-                # See function ### 3 ###
-                return build_score_ab_loss_and_gradients(self, var_list,
-                                                         alpha=self.alpha, beta=self.beta)
-            else:
-                # See function ### 4 ###
-                return build_score_loss_and_gradients(self, var_list,
-                                                      alpha=self.alpha, beta=self.beta, batch_size=self.batch_size)
 
 
 # Function ### 1 ###
@@ -164,7 +140,7 @@ def build_reparam_ab_loss_and_gradients(inference, var_list, alpha, beta):
 
 
 # See function ### 2 ###
-def build_reparam_loss_and_gradients(inference, var_list, alpha=1.0, beta=0.0, batch_size=32):
+def build_reparam_loss_and_gradients(inference, var_list, alpha=1.0, beta=0.0):
     """Build loss function. Its automatic differentiation
     is a stochastic gradient of
     TODO

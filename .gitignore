@@ -107,3 +107,11 @@ data/*
 # ab_div:
 # examples/vae_ab.py
 # edward/inferences/ab_divergence.py
+
+# Universioned files:
+ai_platform/
+data/
+meta_models/
+models/
+notebooks/supervised_regression_ab.ipynb
+notebooks/supervised_regression_renyi.ipynb

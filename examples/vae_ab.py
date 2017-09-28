@@ -18,7 +18,7 @@ from __future__ import division
 from __future__ import print_function
 
 import edward as ed
-from edward.inferences.renyi_divergence import RenyiDivergence
+from edward.inferences.ab_divergence import AbDivergence
 import numpy as np
 import os
 import tensorflow as tf
@@ -42,8 +42,8 @@ ed.set_seed(42)
 M = 100  # batch size during training
 d = 2  # latent dimension
 alpha = 0.5     # alpha values for renyi divergence
+beta = 0.5     # alpha values for renyi divergence
 n_samples = 5   # number of samples used to estimate the Renyi ELBO
-backward_pass = 'max'   # Back propagation style ('min', 'max' or 'full')
 
 # DATA. MNIST batches are fed at training time.
 mnist = input_data.read_data_sets(DATA_DIR)
@@ -64,12 +64,12 @@ qz = Normal(loc=Dense(d)(hidden),
             scale=Dense(d, activation='softplus')(hidden))
 
 # Bind p(x, z) and q(z | x) to the same TensorFlow placeholder for x.
-inference = RenyiDivergence({z: qz}, data={x: x_ph})
+inference = ABDivergence({z: qz}, data={x: x_ph})
 optimizer = tf.train.RMSPropOptimizer(0.01, epsilon=1.0)
 inference.initialize(optimizer=optimizer,
                      n_samples=n_samples,
                      alpha=alpha,
-                     backward_pass=backward_pass)
+                     beta=beta)
 sess = ed.get_session()
 tf.global_variables_initializer().run()
 

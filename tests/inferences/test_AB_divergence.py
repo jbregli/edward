@@ -53,67 +53,67 @@ class test_ab_divergence_class(tf.test.TestCase):
       self.assertAllClose(p.eval(), 0.2, rtol=5e-2, atol=5e-2)
 
   def test_ab_divergence(self):
-    # # normal-normal - special case - KL:
-    # self._test_normal_normal(AbDivergence,
-    #                          n_samples=5,
-    #                          n_iter=200,
-    #                          alpha=1.0,
-    #                          beta=0.0)
-    # # normal-normal - special case - Renyi > 0:
-    # self._test_normal_normal(AbDivergence,
-    #                          n_samples=1,
-    #                          n_iter=200,
-    #                          alpha=0.5,
-    #                          beta=0.5)
-    # # normal-normal - normal case - Renyi < 0:
-    # self._test_normal_normal(AbDivergence,
-    #                          n_samples=1,
-    #                          n_iter=200,
-    #                          alpha=-0.5,
-    #                          beta=1.5)
-    # # normal-normal - normal case - alpha + beta > 0:
-    # self._test_normal_normal(AbDivergence,
-    #                          n_samples=25,
-    #                          n_iter=200,
-    #                          alpha=0.2,
-    #                          beta=0.3)
-    # # normal-normal - normal case - alpha + beta < 0:
-    # self._test_normal_normal(AbDivergence,
-    #                          n_samples=25,
-    #                          n_iter=200,
-    #                          alpha=-0.3,
-    #                          beta=0.2)
-    #
-    # # model parameter - special case - KL:
-    # self._test_model_parameter(AbDivergence,
-    #                            n_samples=5,
-    #                            n_iter=100,
-    #                            alpha=1.0,
-    #                            beta=0.0)
-    # # model parameter - special case - Renyi > 0:
-    # self._test_model_parameter(AbDivergence,
-    #                            n_samples=1,
-    #                            n_iter=100,
-    #                            alpha=0.5,
-    #                            beta=0.5)
-    # # model parameter - normal case - Renyi < 0:
-    # self._test_model_parameter(AbDivergence,
-    #                            n_samples=1,
-    #                            n_iter=100,
-    #                            alpha=-0.5,
-    #                            beta=1.5)
+    # normal-normal - special case - KL:
+    self._test_normal_normal(AbDivergence,
+                             n_samples=5,
+                             n_iter=200,
+                             alpha=1.0,
+                             beta=0.0)
+    # normal-normal - special case - Renyi > 0:
+    self._test_normal_normal(AbDivergence,
+                             n_samples=1,
+                             n_iter=200,
+                             alpha=0.5,
+                             beta=0.5)
+    # normal-normal - normal case - Renyi < 0:
+    self._test_normal_normal(AbDivergence,
+                             n_samples=1,
+                             n_iter=200,
+                             alpha=-0.5,
+                             beta=1.5)
+    # normal-normal - normal case - alpha + beta > 0:
+    self._test_normal_normal(AbDivergence,
+                             n_samples=25,
+                             n_iter=200,
+                             alpha=0.2,
+                             beta=0.3)
+    # normal-normal - normal case - alpha + beta < 0:
+    self._test_normal_normal(AbDivergence,
+                             n_samples=25,
+                             n_iter=200,
+                             alpha=-0.3,
+                             beta=0.2)
+
+    # model parameter - special case - KL:
+    self._test_model_parameter(AbDivergence,
+                               n_samples=5,
+                               n_iter=100,
+                               alpha=1.0,
+                               beta=0.0)
+    # model parameter - special case - Renyi > 0:
+    self._test_model_parameter(AbDivergence,
+                               n_samples=1,
+                               n_iter=100,
+                               alpha=0.5,
+                               beta=0.5)
+    # model parameter - normal case - Renyi < 0:
+    self._test_model_parameter(AbDivergence,
+                               n_samples=1,
+                               n_iter=100,
+                               alpha=-0.5,
+                               beta=1.5)
     # model parameter - normal case - alpha + beta > 0:
     self._test_model_parameter(AbDivergence,
                                n_iter=100,
                                n_samples=5,
-                               alpha=0.4,
-                               beta=0.1)
+                               alpha=0.2,
+                               beta=0.3)
     # normal-normal - normal case - alpha + beta < 0:
     self._test_model_parameter(AbDivergence,
                                n_iter=100,
                                n_samples=5,
                                alpha=-0.2,
-                               beta=0.1)
+                               beta=0.3)
 
 
 if __name__ == '__main__':

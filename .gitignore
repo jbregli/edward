@@ -109,3 +109,4 @@ ai_platform/
 data/
 meta_models/
 models/
+.remote-sync.json

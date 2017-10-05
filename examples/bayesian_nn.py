@@ -19,6 +19,7 @@ import numpy as np
 import tensorflow as tf
 
 from edward.models import Normal
+from edward.inferences.ab_divergence import ABDivergence
 
 
 def build_toy_dataset(N=40, noise_std=0.1):
@@ -42,9 +43,13 @@ ed.set_seed(42)
 
 N = 40  # number of data points
 D = 1   # number of features
+alpha = 0.1     # alpha values for renyi divergence
+beta = 0.5     # alpha values for renyi divergence
+n_samples = 5   # number of samples used to estimate the Renyi ELBO
 
 # DATA
 X_train, y_train = build_toy_dataset(N)
+X_test, y_test = build_toy_dataset(20)
 
 # MODEL
 with tf.name_scope("model"):
@@ -85,7 +90,17 @@ with tf.name_scope("posterior"):
                   scale=tf.nn.softplus(
                       tf.Variable(tf.random_normal([1]), name="scale")))
 
-inference = ed.KLqp({W_0: qW_0, b_0: qb_0,
-                     W_1: qW_1, b_1: qb_1,
-                     W_2: qW_2, b_2: qb_2}, data={X: X_train, y: y_train})
-inference.run(logdir='log')
+inference = ABDivergence({W_0: qW_0, b_0: qb_0,
+                          W_1: qW_1, b_1: qb_1,
+                          W_2: qW_2, b_2: qb_2}, data={X: X_train, y: y_train})
+inference.run(logdir='log',
+              n_samples=n_samples,
+              alpha=alpha,
+              beta=beta)
+
+# build posterior predictive on test data
+pred_weights, pred_means, pred_std = sess.run(
+    [tf.nn.softmax(logits), locs, scales], feed_dict={X: X_test})
+
+x_post = ed.copy(x, {z: qz_test, beta: qbeta})
+ed.evaluate('log_likelihood', data={x_post: x_test})

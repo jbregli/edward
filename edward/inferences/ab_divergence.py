@@ -17,12 +17,12 @@ except Exception as e:
   raise ImportError("{0}. Your TensorFlow version is not supported.".format(e))
 
 
-class AbDivergence(VariationalInference):
+class ABDivergence(VariationalInference):
   """Variational inference with the AB divergence
   """
 
   def __init__(self, *args, **kwargs):
-    super(AbDivergence, self).__init__(*args, **kwargs)
+    super(ABDivergence, self).__init__(*args, **kwargs)
 
     self.is_reparameterizable = all([
         rv.reparameterization_type ==
@@ -37,7 +37,7 @@ class AbDivergence(VariationalInference):
     self.alpha = alpha
     self.beta = beta
 
-    return super(AbDivergence, self).initialize(*args, **kwargs)
+    return super(ABDivergence, self).initialize(*args, **kwargs)
 
   def build_loss_and_gradients(self, var_list):
 
@@ -106,18 +106,29 @@ class AbDivergence(VariationalInference):
         log_ratios1_max = tf.reduce_max(log_ratios1, 0)
         log_ratios2_max = tf.reduce_max(log_ratios2, 0)
         log_ratios3_max = tf.reduce_max(log_ratios3, 0)
+        #
+        # log_ratios1 = tf.log(
+        #     tf.maximum(1e-9,
+        #                tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
+        #     + log_ratios1_max
+        # log_ratios2 = tf.log(
+        #     tf.maximum(1e-9,
+        #                tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0))) \
+        #     + log_ratios2_max
+        # log_ratios3 = tf.log(
+        #     tf.maximum(1e-9,
+        #                tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0))) \
+        #     + log_ratios3_max
+        print('v2')
 
         log_ratios1 = tf.log(
-            tf.maximum(1e-9,
-                       tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
+            tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0)) \
             + log_ratios1_max
         log_ratios2 = tf.log(
-            tf.maximum(1e-9,
-                       tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0))) \
+            tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0)) \
             + log_ratios2_max
         log_ratios3 = tf.log(
-            tf.maximum(1e-9,
-                       tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0))) \
+            tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0)) \
             + log_ratios3_max
 
         log_ratios = \
@@ -125,7 +136,7 @@ class AbDivergence(VariationalInference):
             + log_ratios2 / (self.alpha * (self.alpha + self.beta)) \
             - log_ratios3 / (self.alpha * self.beta)
 
-        log_ratios = tf.maximum(0.0, log_ratios)
+        log_ratios = tf.maximum(1.e-9, log_ratios)
         loss = tf.reduce_mean(log_ratios)
 
       if self.logging:
@@ -134,7 +145,7 @@ class AbDivergence(VariationalInference):
         tf.summary.scalar("loss/p_log_prob", p_log_prob,
                           collections=[self._summary_key])
         tf.summary.scalar("loss/q_log_prob", q_log_prob,
-                          collections=[_summary_key])
+                          collections=[self._summary_key])
 
       grads = tf.gradients(loss, var_list)
       grads_and_vars = list(zip(grads, var_list))

@@ -18,7 +18,7 @@ from __future__ import division
 from __future__ import print_function
 
 import edward as ed
-from edward.inferences.ab_divergence import AbDivergence
+from edward.inferences.ab_divergence import ABDivergence
 import numpy as np
 import os
 import tensorflow as tf

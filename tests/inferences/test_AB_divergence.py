@@ -112,7 +112,7 @@ class test_ab_divergence_class(tf.test.TestCase):
     self._test_model_parameter(AbDivergence,
                                n_iter=100,
                                n_samples=5,
-                               alpha=-0.2,
+                               alpha=-0.5,
                                beta=0.3)
 
 

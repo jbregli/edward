@@ -1,0 +1,16 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "karl.stats.ucl.ac.uk",
+  "port": "5901",
+  "target": "/home/jeanbaptiste/Documents/PYTHON/edward",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "watch": [],
+  "transport": "ftp",
+  "username": "jeanbaptiste",
+  "password": "Arm175jj115"
+}

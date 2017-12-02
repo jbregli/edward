@@ -105,7 +105,7 @@ l_alpha = [-0.2]
 # alpha values for renyi divergence
 # l_beta = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
 l_beta = [0.6, 0.7, 0.8, 0.9, 1.0]
-part = 8 # 7 6 5 4 3 2 1
+part = 8  # 7 6 5 4 3 2 1
 # beta = 0.4      # alpha values for renyi divergence
 n_samples = 100    # number of samples used to estimate the Renyi ELBO
 batch_size = 32
@@ -245,8 +245,8 @@ for alpha, beta in itertools.product(reversed(l_alpha), reversed(l_beta)):
 
         # Compute RMSE and MAE
         tmp_ll, tmp_mse = ed.evaluate(['log_likelihood', 'mean_squared_error'],
-                                  data={X: X_test[i],
-                                        y_post: np.ravel(y_test[i])})
+                                      data={X: X_test[i],
+                                            y_post: np.ravel(y_test[i])})
         test_ll[i] = -tmp_nll
         test_rmse[i] = np.sqrt(tmp_mse)
         # test_rmse[i] = np.sqrt(

@@ -130,8 +130,8 @@ class ABDivergence(VariationalInference):
         #     + log_ratios3_max
 
         log_ratios = \
-            log_ratios1 / (self.beta * (self.alpha + self.beta)) \
-            + log_ratios2 / (self.alpha * (self.alpha + self.beta)) \
+            # log_ratios1 / (self.beta * (self.alpha + self.beta)) \
+            # + log_ratios2 / (self.alpha * (self.alpha + self.beta)) \
             - log_ratios3 / (self.alpha * self.beta)
 
         log_ratios = tf.maximum(1.e-9, log_ratios)

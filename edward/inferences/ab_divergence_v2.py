@@ -85,9 +85,9 @@ class ABDivergence(VariationalInference):
                 for z, qz in six.iteritems(self.latent_vars)])
 
             # Regularization:
-            loss_ab = 1 / (self.alpha * self.beta) * tf.reduce_sum(
+            loss_ab = -1 / (self.alpha * self.beta) * tf.reduce_sum(
                 tf.exp([b * p for b, p in zip(beta, p_log_prob)])) + \
-                - 1 / ((self.alpha + self.beta) * self.beta) * tf.reduce_sum(
+                + 1 / ((self.alpha + self.beta) * self.beta) * tf.reduce_sum(
                     tf.exp([(a + b) * q for a, b, q
                             in zip(alpha, beta, q_log_prob)]))
 

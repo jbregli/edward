@@ -86,10 +86,10 @@ class ABDivergence(VariationalInference):
 
             # Regularization:
             loss_ab = -1 / (self.alpha * self.beta) * tf.reduce_sum(
-                tf.exp([b * p for b, p in zip(beta, p_log_prob)])) + \
+                tf.exp([b * p for b, q in zip(beta, q_log_prob)])) + \
                 + 1 / ((self.alpha + self.beta) * self.beta) * tf.reduce_sum(
-                    tf.exp([(a + b) * q for a, b, q
-                            in zip(alpha, beta, q_log_prob)]))
+                    tf.exp([(a + b) * q for a, b, p
+                            in zip(alpha, beta, p_log_prob)]))
 
             loss = -kl_penalty + loss_ab
 

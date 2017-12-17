@@ -46,7 +46,7 @@ class ABDivergence(VariationalInference):
             p_log_prob = [0.0] * self.n_samples
             q_log_prob = [0.0] * self.n_samples
             alpha = [self.alpha] * self.n_samples
-            betq = [self.beta] * self.n_samples
+            beta = [self.beta] * self.n_samples
             base_scope = tf.get_default_graph().unique_name("inference") + '/'
             for s in range(self.n_samples):
                 # Form dictionary in order to replace conditioning on prior or

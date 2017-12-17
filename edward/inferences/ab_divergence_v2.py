@@ -45,6 +45,8 @@ class ABDivergence(VariationalInference):
         if self.is_reparameterizable:
             p_log_prob = [0.0] * self.n_samples
             q_log_prob = [0.0] * self.n_samples
+            alpha = [self.alpha] * self.n_samples
+            betq = [self.beta] * self.n_samples
             base_scope = tf.get_default_graph().unique_name("inference") + '/'
             for s in range(self.n_samples):
                 # Form dictionary in order to replace conditioning on prior or
@@ -84,9 +86,9 @@ class ABDivergence(VariationalInference):
 
             # Regularization:
             loss_ab = -1 / (self.alpha * self.beta) * tf.reduce_sum(
-                tf.exp(self.beta * p_log_prob)) + \
+                tf.exp([b*p for b,p in zip(beta, p_log_prob)])) + \
                 + 1 / ((self.alpha + self.beta) * self.beta) * tf.reduce_sum(
-                    tf.exp((self.alpha + self.beta) * q_log_prob))
+                    tf.exp([(a+b)*q for a,b,p in zip(alpha, beta, q_log_prob)])
 
             loss = kl_penalty - loss_ab
 

@@ -137,9 +137,6 @@ class ABDivergence(VariationalInference):
         log_ratios = tf.maximum(1.e-9, log_ratios)
         loss = tf.reduce_mean(log_ratios)
 
-        if np.sign(self.alpha) == np.sign(self.beta):
-            loss = -loss
-
       if self.logging:
         p_log_prob = tf.reduce_mean(p_log_prob)
         q_log_prob = tf.reduce_mean(q_log_prob)

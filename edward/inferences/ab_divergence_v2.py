@@ -61,12 +61,15 @@ class ABDivergence(VariationalInference):
                         else:
                             dict_swap[x] = qx
 
+                        q_log_prob[s] += tf.reduce_sum(
+                            self.scale.get(x, 1.0) * qx_copy.log_prob(dict_swap[x]))
+
                 for z, qz in six.iteritems(self.latent_vars):
                     # Copy q(z) to obtain new set of posterior samples.
                     qz_copy = copy(qz, scope=scope)
                     dict_swap[z] = qz_copy.value()
-                    q_log_prob[s] += tf.reduce_sum(
-                        self.scale.get(z, 1.0) * qz_copy.log_prob(dict_swap[z]))
+                    # q_log_prob[s] += tf.reduce_sum(
+                    #     self.scale.get(z, 1.0) * qz_copy.log_prob(dict_swap[z]))
 
                 for z in six.iterkeys(self.latent_vars):
                     z_copy = copy(z, dict_swap, scope=scope)
@@ -88,7 +91,7 @@ class ABDivergence(VariationalInference):
             loss_ab = - 1 / (self.alpha * self.beta) * tf.reduce_sum(
                 tf.exp([b * p for b, p in zip(beta, p_log_prob)])) + \
                 + 1 / ((self.alpha + self.beta) * self.beta) * tf.reduce_sum(
-                    tf.exp([(a + b) * q for a, b, q
+                    tf.exp([(a + b) * tf.log(q) for a, b, q
                             in zip(alpha, beta, q_log_prob)]))
 
             loss = -kl_penalty + loss_ab

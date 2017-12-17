@@ -91,7 +91,7 @@ class ABDivergence(VariationalInference):
                     tf.exp([(a + b) * q for a, b, q
                             in zip(alpha, beta, q_log_prob)]))
 
-            loss = kl_penalty - loss_ab
+            loss = -kl_penalty + loss_ab
 
             if self.logging:
                 p_log_prob = tf.reduce_mean(p_log_prob)

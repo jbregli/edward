@@ -79,15 +79,14 @@ class ABDivergence(VariationalInference):
 
             # KL:
             kl_penalty = tf.reduce_sum([
-                tf.reduce_sum(inference.kl_scaling.get(
-                    z, 1.0) * kl_divergence(qz, z))
+                tf.reduce_sum(kl_divergence(qz, z))
                 for z, qz in six.iteritems(inference.latent_vars)])
 
             # Regularization:
             loss_ab = -1 / (alpha * beta) * tf.reduce_sum(
                 tf.exp(beta * p_log_prob)) + \
-                + 1 / ((alpha+beta) * beta) * tf.reduce_sum(
-                    tf.exp((alpha+beta) * q_log_prob))
+                + 1 / ((alpha + beta) * beta) * tf.reduce_sum(
+                    tf.exp((alpha + beta) * q_log_prob))
 
             loss = kl_penalty - loss_ab
 

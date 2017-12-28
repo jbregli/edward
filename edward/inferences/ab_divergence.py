@@ -112,7 +112,7 @@ class ABDivergence(VariationalInference):
                        tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
             + log_ratios1_max
           log_ratios2 = tf.maximum(1e-9,
-                                   tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0))
+                                   tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0)) \
             + log_ratios2_max
 
           log_ratios =

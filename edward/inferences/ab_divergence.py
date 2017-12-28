@@ -108,15 +108,15 @@ class ABDivergence(VariationalInference):
           log_ratios2_max = tf.reduce_max(log_ratios2, 0)
 
           log_ratios1 = tf.log(
-            tf.maximum(1e-9,
-                       tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
-            + log_ratios1_max
+              tf.maximum(1e-9,
+                         tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
+              + log_ratios1_max
           log_ratios2 = tf.maximum(1e-9,
                                    tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0)) \
-            + log_ratios2_max
+              + log_ratios2_max
 
-          log_ratios =
-            log_ratios1 / (self.beta * (self.alpha + self.beta))
+          log_ratios = \
+              log_ratios1 / (self.beta * (self.alpha + self.beta))
             + log_ratios2 / (self.alpha * (self.alpha + self.beta))
             - log_ratios3 / (self.alpha * self.beta)
 
@@ -157,46 +157,46 @@ class ABDivergence(VariationalInference):
         else:
           print("Case 5: Normal")
           log_ratios1 = tf.stack([(self.alpha + self.beta - 1) * q
-                                    for q in q_log_prob])
+                                  for q in q_log_prob])
           log_ratios2 = tf.stack([(self.alpha + self.beta) * p - q
-                                    for p, q in zip(p_log_prob, q_log_prob)])
+                                  for p, q in zip(p_log_prob, q_log_prob)])
           log_ratios3 = tf.stack([self.beta * p - (1 - self.alpha) * q
-                                    for p, q in zip(p_log_prob, q_log_prob)])
+                                  for p, q in zip(p_log_prob, q_log_prob)])
 
           log_ratios1_max = tf.reduce_max(log_ratios1, 0)
           log_ratios2_max = tf.reduce_max(log_ratios2, 0)
           log_ratios3_max = tf.reduce_max(log_ratios3, 0)
 
           log_ratios1 = tf.log(tf.maximum(1e-9,
-                           tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0)))
-                + log_ratios1_max
-            log_ratios2=tf.log(
+                                          tf.reduce_mean(tf.exp(log_ratios1 - log_ratios1_max), 0))) \
+              + log_ratios1_max
+            log_ratios2 = tf.log(
                 tf.maximum(1e-9,
-                           tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0)))
+                           tf.reduce_mean(tf.exp(log_ratios2 - log_ratios2_max), 0))) \
                 + log_ratios2_max
-            log_ratios3=tf.log(
+            log_ratios3 = tf.log(
                 tf.maximum(1e-9,
-                           tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0)))
+                           tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0))) \
                 + log_ratios3_max
 
-            log_ratios=
+            log_ratios = \
                 log_ratios1 / (self.beta * (self.alpha + self.beta))
-                + log_ratios2 / (self.alpha * (self.alpha + self.beta))
-                - log_ratios3 / (self.alpha * self.beta)
+              + log_ratios2 / (self.alpha * (self.alpha + self.beta))
+              - log_ratios3 / (self.alpha * self.beta)
 
-            log_ratios=tf.maximum(1.e-9, log_ratios)
-            loss=tf.reduce_mean(log_ratios)
+            log_ratios = tf.maximum(1.e-9, log_ratios)
+            loss = tf.reduce_mean(log_ratios)
 
       if self.logging:
-        p_log_prob=tf.reduce_mean(p_log_prob)
-        q_log_prob=tf.reduce_mean(q_log_prob)
+        p_log_prob = tf.reduce_mean(p_log_prob)
+        q_log_prob = tf.reduce_mean(q_log_prob)
         tf.summary.scalar("loss/p_log_prob", p_log_prob,
-                          collections = [self._summary_key])
+                          collections=[self._summary_key])
         tf.summary.scalar("loss/q_log_prob", q_log_prob,
-                          collections = [self._summary_key])
+                          collections=[self._summary_key])
 
-      grads=tf.gradients(loss, var_list)
-      grads_and_vars=list(zip(grads, var_list))
+      grads = tf.gradients(loss, var_list)
+      grads_and_vars = list(zip(grads, var_list))
       return loss, grads_and_vars
     else:
       raise NotImplementedError(

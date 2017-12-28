@@ -182,13 +182,13 @@ class ABDivergence(VariationalInference):
               tf.reduce_mean(tf.exp(log_ratios3 - log_ratios3_max), 0))) \
               + log_ratios3_max
 
-            log_ratios = \
-              log_ratios1 / (self.beta * (self.alpha + self.beta)) \
-              + log_ratios2 / (self.alpha * (self.alpha + self.beta)) \
-              - log_ratios3 / (self.alpha * self.beta)
+          log_ratios = \
+            log_ratios1 / (self.beta * (self.alpha + self.beta)) \
+            + log_ratios2 / (self.alpha * (self.alpha + self.beta)) \
+            - log_ratios3 / (self.alpha * self.beta)
 
-            log_ratios = tf.maximum(1.e-9, log_ratios)
-            loss = tf.reduce_mean(log_ratios)
+          log_ratios = tf.maximum(1.e-9, log_ratios)
+          loss = tf.reduce_mean(log_ratios)
 
       if self.logging:
         p_log_prob = tf.reduce_mean(p_log_prob)

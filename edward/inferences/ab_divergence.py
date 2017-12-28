@@ -97,7 +97,7 @@ class ABDivergence(VariationalInference):
       # AB-objective:
       else:
         # Case 1: alpha + beta = 0
-        if ((np.abs(self.alpha - self.beta) < 10e-3) 
+        if ((np.abs(self.alpha + self.beta) < 10e-3) 
           and not (np.abs(self.beta) < 10e-3 and np.abs(self.alpha) < 10e-3)):
           print("Case 1: alpha + beta = 0")
           log_ratios1 = tf.stack([self.alpha * (p - q)

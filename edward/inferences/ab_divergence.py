@@ -97,9 +97,8 @@ class ABDivergence(VariationalInference):
       # AB-objective:
       else:
         # Case 1: alpha + beta = 0
-        if ((np.abs(self.alpha + self.beta) < 10e-3) 
+        if ((np.abs(self.alpha + self.beta) < 10e-3)
           and not (np.abs(self.beta) < 10e-3 and np.abs(self.alpha) < 10e-3)):
-          print("Case 1: alpha + beta = 0")
           log_ratios1 = tf.stack([self.alpha * (p - q)
                                   for p, q in zip(p_log_prob, q_log_prob)])
           log_ratios2 = tf.stack([(p - q)
@@ -123,7 +122,6 @@ class ABDivergence(VariationalInference):
 
         # Case 2: alpha = 0, beta != 0
         elif np.abs(self.alpha) < 10e-3 and np.abs(self.beta) > 10e-3:
-          print("Case 2: alpha = 0, beta != 0")
           log_ratios = tf.stack([tf.exp(self.beta * q) * (q - p)
                                  for p, q in zip(p_log_prob, q_log_prob)])
 
@@ -133,7 +131,6 @@ class ABDivergence(VariationalInference):
 
         # Case 3: alpha != 0, beta = 0
         elif np.abs(self.beta) < 10e-3 and np.abs(self.alpha) > 10e-3:
-          print("Case 2: alpha != 0, beta = 0")
           log_ratios = tf.stack([tf.exp(self.alpha * p) * (p - q)
                                  for p, q in zip(p_log_prob, q_log_prob)])
 
@@ -143,7 +140,6 @@ class ABDivergence(VariationalInference):
 
         # Case 4: alpha = 0, beta = 0
         elif np.abs(self.beta) < 10e-3 and np.abs(self.alpha) < 10e-3:
-          print("Case 4: alpha = 0, beta = 0")
           log_ratios = tf.stack([(p - q)**2
                                  for p, q in zip(p_log_prob, q_log_prob)])
 
@@ -153,7 +149,6 @@ class ABDivergence(VariationalInference):
 
         # Case 5: Normal case:
         else:
-          print("Case 5: Normal")
           log_ratios1 = tf.stack([(self.alpha + self.beta - 1) * q
                                   for q in q_log_prob])
           log_ratios2 = tf.stack([(self.alpha + self.beta) * p - q

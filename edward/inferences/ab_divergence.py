@@ -18,7 +18,7 @@ except Exception as e:
 
 
 class ABDivergence(VariationalInference):
-  """Variational inference with the AB divergence
+  """Variational inference with the sAB divergence
   """
 
   def __init__(self, *args, **kwargs):

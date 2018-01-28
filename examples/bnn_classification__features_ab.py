@@ -1,5 +1,5 @@
-import os
 ROOT_DIR = os.environ['ROOT_DIR']
+import os
 import sys
 sys.path.append(ROOT_DIR)
 
@@ -23,13 +23,11 @@ ed.set_seed(42)
 
 
 # Helper functions:
-def neural_network(x, W_0, W_1, W_2, b_0, b_1, b_2):
+def neural_network(x, W_0, b_0):
     """
     Create a 2 layers neural network with relu activation
     """
-    h1 = tf.nn.relu(tf.matmul(x, W_0) + b_0)
-    h2 = tf.nn.relu(tf.matmul(h1, W_1) + b_1)
-    out = tf.matmul(h2, W_2) + b_2
+    out = tf.matmul(x, W_0) + b_0
     return out
 
 
@@ -61,10 +59,10 @@ mnist = input_data.read_data_sets(DATA_DIR)
 
 # PARAMETERS:
 # , -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-l_alpha = [1.4] # , 0.5]
+l_alpha = [0.9] # , 0.5]
 # alpha values for renyi divergence
 # l_beta = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
-l_beta = [-1.0] # , 0.0, 0.5]
+l_beta = [-0.2] # , 0.0, 0.5]
 
 # beta = 0.4      # alpha values for renyi divergence
 n_samples = 5    # number of samples used to estimate the Renyi ELBO
@@ -73,21 +71,17 @@ logs_path = os.path.join(ROOT_DIR, 'models', 'mnist', 'ab')
 
 # batch_size = 128   # number of images in a minibatch.
 D = 784   # number of features.
-hidden1 = 50
-hidden2 = 50
 K = 10    # number of classes.
-n_iter = 500000
-n_print=1000
+n_iter = 1000000
+p_outliers = 0.1
 
-p_outliers = 0.05
-
-starter_learning_rate = 0.01
-decay_ratio = 0.8
-decay_step_size = 30000
+starter_learning_rate = 0.001
+decay_ratio = 0.75
+decay_step_size = 50000
 
 # OUTPUT
 col = ['n_iter', 'batch_size', 'n_samples',
-       'H1', 'H2', 'p_outliers',
+       'p_outliers',
        'alpha', 'beta', 'accuracy']
 output_name = 'mnist_AB_E{}_B{}_K{}.h5'.format(n_iter,
                                                batch_size,
@@ -101,63 +95,32 @@ for alpha, beta in itertools.product(reversed(l_alpha), reversed(l_beta)):
     # MODEL
     if i == 0:
         with tf.name_scope("model"):
-            W_0 = Normal(loc=tf.zeros([D, hidden1]),
-                         scale=tf.ones([D, hidden1]),
+            W_0 = Normal(loc=tf.zeros([D, K]),
+                         scale=tf.ones([D, K]),
                          name="W_0")
-            W_1 = Normal(loc=tf.zeros([hidden1, hidden2]),
-                         scale=tf.ones([hidden1, hidden2]),
-                         name="W_1")
-            W_2 = Normal(loc=tf.zeros([hidden2, K]),
-                         scale=tf.ones([hidden2, K]),
-                         name="W_2")
-            b_0 = Normal(loc=tf.zeros(hidden1),
-                         scale=tf.ones(hidden1),
-                         name="b_0")
-            b_1 = Normal(loc=tf.zeros(hidden2),
-                         scale=tf.ones(hidden2),
-                         name="b_1")
-            b_2 = Normal(loc=tf.zeros(K),
+            b_0 = Normal(loc=tf.zeros(K),
                          scale=tf.ones(K),
-                         name="b_2")
+                         name="b_0")
 
             X = tf.placeholder(tf.float32, [None, D], name="X")
-            y = Categorical(neural_network(X, W_0, W_1, W_2, b_0, b_1, b_2),
-                            name="y")
+            y = Categorical(neural_network(X, W_0, b_0), name="y")
 
         # INFERENCE
         with tf.name_scope("posterior"):
             with tf.name_scope("qW_0"):
-                qW_0 = Normal(loc=tf.Variable(tf.random_normal([D, hidden1]),
+                qW_0 = Normal(loc=tf.Variable(tf.random_normal([D, K]),
                                               name="loc"),
                               scale=tf.nn.softplus(
-                              tf.Variable(tf.random_normal([D, hidden1]),
+                              tf.Variable(tf.random_normal([D, K]),
                                           name="scale")))
-            with tf.name_scope("qW_1"):
-                qW_1 = Normal(loc=tf.Variable(tf.random_normal([hidden1, hidden2]), name="loc"),
-                              scale=tf.nn.softplus(
-                    tf.Variable(tf.random_normal([hidden1, hidden2]), name="scale")))
-            with tf.name_scope("qW_2"):
-                qW_2 = Normal(loc=tf.Variable(tf.random_normal([hidden2, K]), name="loc"),
-                              scale=tf.nn.softplus(
-                    tf.Variable(tf.random_normal([hidden2, K]), name="scale")))
             with tf.name_scope("qb_0"):
-                qb_0 = Normal(loc=tf.Variable(tf.random_normal([hidden1]), name="loc"),
-                              scale=tf.nn.softplus(
-                    tf.Variable(tf.random_normal([hidden1]), name="scale")))
-            with tf.name_scope("qb_1"):
-                qb_1 = Normal(loc=tf.Variable(tf.random_normal([hidden2]), name="loc"),
-                              scale=tf.nn.softplus(
-                    tf.Variable(tf.random_normal([hidden2]), name="scale")))
-            with tf.name_scope("qb_2"):
-                qb_2 = Normal(loc=tf.Variable(tf.random_normal([K]), name="loc"),
+                qb_0 = Normal(loc=tf.Variable(tf.random_normal([K]), name="loc"),
                               scale=tf.nn.softplus(
                     tf.Variable(tf.random_normal([K]), name="scale")))
 
         with tf.name_scope("inference"):
             y_ph = tf.placeholder(tf.int32, [batch_size], name='out')
-            inference = ABDivergence({W_0: qW_0, b_0: qb_0,
-                                      W_1: qW_1, b_1: qb_1,
-                                      W_2: qW_2, b_2: qb_2},
+            inference = ABDivergence({W_0: qW_0, b_0: qb_0},
                                      data={y: y_ph})
 
         with tf.name_scope("optimizer"):
@@ -177,7 +140,7 @@ for alpha, beta in itertools.product(reversed(l_alpha), reversed(l_beta)):
                          global_step=global_step,
                          n_samples=n_samples,
                          n_iter=n_iter,
-                         n_print=n_print,
+                         n_print=10000,
                          alpha=alpha,
                          beta=beta)
     tf.global_variables_initializer().run()
@@ -200,33 +163,19 @@ for alpha, beta in itertools.product(reversed(l_alpha), reversed(l_beta)):
 
     n_samples = 100
     prob_lst = []
-    samples = []
-    w0_samples = []
-    w1_samples = []
-    w2_samples = []
-    b0_samples = []
-    b1_samples = []
-    b2_samples = []
 
     for _ in range(n_samples):
         w0_samp = qW_0.sample()
-        w1_samp = qW_1.sample()
-        w2_samp = qW_2.sample()
-
         b0_samp = qb_0.sample()
-        b1_samp = qb_1.sample()
-        b2_samp = qb_2.sample()
 
-        prob = neural_network(X_test, w0_samp, w1_samp,
-                              w2_samp, b0_samp, b1_samp, b2_samp)
+        prob = neural_network(X_test, w0_samp, b0_samp)
         prob_lst.append(prob.eval())
 
     Y_pred = np.argmax(np.mean(prob_lst, axis=0), axis=1)
     acc = (Y_pred == Y_test).mean() * 100
     print("accuracy in predicting the test data = {}".format(acc))
 
-    pd_info = [n_iter, batch_size, n_samples,
-               hidden1, hidden2, p_outliers,
+    pd_info = [n_iter, batch_size, n_samples, p_outliers,
                alpha, beta, acc]
 
     out = out.append(pd.DataFrame([pd_info], columns=col))

@@ -59,20 +59,20 @@ mnist = input_data.read_data_sets(DATA_DIR)
 
 # PARAMETERS:
 # , -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-l_alpha = [0.9] # , 0.5]
+l_alpha = [1.4] # , 0.5]
 # alpha values for renyi divergence
 # l_beta = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
-l_beta = [-0.2] # , 0.0, 0.5]
+l_beta = [-1.0] # , 0.0, 0.5]
 
 # beta = 0.4      # alpha values for renyi divergence
-n_samples = 5    # number of samples used to estimate the Renyi ELBO
+n_samples = 25    # number of samples used to estimate the Renyi ELBO
 batch_size = 32
 logs_path = os.path.join(ROOT_DIR, 'models', 'mnist', 'ab')
 
 # batch_size = 128   # number of images in a minibatch.
 D = 784   # number of features.
 K = 10    # number of classes.
-n_iter = 1000000
+n_iter = 500000
 p_outliers = 0.1
 
 starter_learning_rate = 0.001

@@ -1,16 +1,15 @@
 {
-  "uploadOnSave": true,
-  "useAtomicWrites": false,
-  "deleteLocal": false,
-  "hostname": "karl.stats.ucl.ac.uk",
-  "port": "5901",
-  "target": "/home/jeanbaptiste/Documents/PYTHON/edward",
+  "hostname": "35.205.150.5",
+  "transport": "scp",
+  "port": 22,
+  "username": "ubuntu",
+  "password": "",
+  "keyfile": "/home/regli/.ssh/google_compute_engine.pub",
+  "passphrase": "xihelm",
+  "target": "/home/ubuntu/scratch/edward",
   "ignore": [
-    ".remote-sync.json",
-    ".git/**"
+    ".git/**", "remote-sync.json"
   ],
-  "watch": [],
-  "transport": "ftp",
-  "username": "jeanbaptiste",
-  "password": "Arm175jj115"
+  "watch": ["/edward/", "/examples/"],
+  "uploadOnSave": true
 }
